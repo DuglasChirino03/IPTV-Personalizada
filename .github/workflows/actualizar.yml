@@ -38,13 +38,19 @@ jobs:
           git commit -m "Actualizar lista IPTV" || echo "Sin cambios"
           git push
 
+      - name: Preparar sitio web
+        run: |
+          mkdir -p public
+          cp lista.m3u public/lista.m3u
+          echo '<!DOCTYPE html><html lang="es"><meta charset="UTF-8"><title>Mi lista IPTV</title><body><h1>Mi lista IPTV</h1><a href="lista.m3u">Abrir lista M3U</a></body></html>' > public/index.html
+
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Preparar archivo para publicar
+      - name: Preparar archivos para publicar
         uses: actions/upload-pages-artifact@v4
         with:
-          path: lista.m3u
+          path: public
 
       - name: Publicar lista IPTV
         id: deployment

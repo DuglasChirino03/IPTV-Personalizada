@@ -8,10 +8,15 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   generar:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Descargar repositorio
@@ -32,4 +37,16 @@ jobs:
           git add lista.m3u
           git commit -m "Actualizar lista IPTV" || echo "Sin cambios"
           git push
-          
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Preparar archivo para publicar
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: lista.m3u
+
+      - name: Publicar lista IPTV
+        id: deployment
+        uses: actions/deploy-pages@v4
+        
